@@ -1,0 +1,448 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Language" content="zh-tw">
+    <meta charset="utf-8">
+    <title>中興大學街景服務</title>
+    <style>
+      html, body, #map-canvas {
+        height: 90%;
+        margin: 0px;
+        padding: 0px
+      }
+      #control {
+        background: #fff;
+        padding: 5px;
+        font-size: 14px;
+        font-family: Arial;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 2px rgba(33, 33, 33, 0.4);
+        display: none;
+      }
+
+      @media print {
+        #map-canvas {
+          height: 500px;
+          margin: 0;
+        }
+
+        #directions-panel {
+          float: none;
+          width: auto;
+        }
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAOWIm-HhBGYTVklADd5C4MAaFAuxUEP8Q"></script>
+        <script>
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+
+function initialize() {
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var mapOptions = {
+    zoom: 18,
+    center: new google.maps.LatLng(24.121467,120.675421)
+  };
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+  directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directions-panel'));
+  
+
+    var rectangle = new google.maps.Rectangle({
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35,
+    map: map,
+    bounds: new google.maps.LatLngBounds(
+     new google.maps.LatLng(24.12131,120.67679),
+     new google.maps.LatLng(24.12095,120.67735))
+  });
+  
+
+  var control = document.getElementById('control');
+  control.style.display = 'block';
+  map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);
+}
+
+function calcRoute() {
+  var start = document.getElementById('p_start').value;
+  var end = document.getElementById('p_end').value;
+  var request = {
+    origin: start,
+    destination: end,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
+  </script>
+  
+
+    <script>
+/*
+ * Click the map to set a new location for the Street View camera.
+ */
+
+var map;
+var berkeley = new google.maps.LatLng();
+var sv = new google.maps.StreetViewService();
+
+var panorama;
+
+function initialize() {
+
+  panorama = new google.maps.StreetViewPanorama(document.getElementById('pano'));
+
+  // Set up the map
+  var mapOptions = {
+    center: berkeley,
+    zoom: 18,
+    streetViewControl: false
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  // Set the initial Street View camera to the center of the map
+  sv.getPanoramaByLocation(berkeley, 50, processSVData);
+
+  // Look for a nearby Street View panorama when the map is clicked.
+  // getPanoramaByLocation will return the nearest pano when the
+  // given radius is 50 meters or less.
+  google.maps.event.addListener(map, 'click', function(event) {
+      sv.getPanoramaByLocation(event.latLng, 50, processSVData);
+  });
+}
+
+
+function processSVData(data, status) {
+  if (status == google.maps.StreetViewStatus.OK) {
+    var marker = new google.maps.Marker({
+      position: data.location.latLng,
+      map: map,
+      title: data.location.description
+    });
+
+
+   var rectangle = new google.maps.Rectangle({
+    strokeColor: '#FF0000',
+    strokeOpacity: 0.8,
+    strokeWeight: 2,
+    fillColor: '#FF0000',
+    fillOpacity: 0.35,
+    map: map,
+    bounds: new google.maps.LatLngBounds(
+      new google.maps.LatLng(),
+      new google.maps.LatLng())
+  });
+  
+
+    panorama.setPano(data.location.pano);
+    panorama.setPov({
+      heading: ,
+      pitch: 0
+    });
+    panorama.setVisible(true);
+
+    google.maps.event.addListener(marker, 'click', function() {
+
+      var markerPanoID = data.location.pano;
+      // Set the Pano to use the passed panoID
+      panorama.setPano(markerPanoID);
+      panorama.setPov({
+        heading: ,
+        pitch: 0
+      });
+      panorama.setVisible(true);
+    });
+  } else {
+    alert('Street View data not found for this location.');
+  }
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+  
+    </script>
+    
+  </head>
+ 
+  <body onload="calcRoute()">
+：
+<BR>
+<FORM ACTION="map_nchu" METHOD="POST" name=form1>
+<FONT COLOR="000000" FACE="標楷體" SIZE="4">目的地 : </FONT><SELECT NAME="p_destination" onChange="document.form1.submit()";>
+<OPTION value="高階經理班">高階經理班
+<OPTION value="高階經理人">高階經理人
+<OPTION value="體育室">體育室
+<OPTION value="駐警隊">駐警隊
+<OPTION value="食生系">食生系
+<OPTION value="食生碩">食生碩
+<OPTION value="食生所">食生所
+<OPTION value="食生博">食生博
+<OPTION value="食品加工廠">食品加工廠
+<OPTION value="顯光源產專">顯光源產專
+<OPTION value="電系統產">電系統產
+<OPTION value="電機系">電機系
+<OPTION value="電機控產專">電機控產專
+<OPTION value="電機所">電機所
+<OPTION value="電機博">電機博
+<OPTION value="電化材產專">電化材產專
+<OPTION value="閱覽組">閱覽組
+<OPTION value="野動疾">野動疾
+<OPTION value="醫科學程">醫科學程
+<OPTION value="醫工所">醫工所
+<OPTION value="運健所">運健所
+<OPTION value="通電產專">通電產專
+<OPTION value="通識中心">通識中心
+<OPTION value="通訊所">通訊所
+<OPTION value="農院(研)">農院(研)
+<OPTION value="農資院學士學位學程">農資院學士學位學程
+<OPTION value="農資院">農資院
+<OPTION value="農藝系">農藝系
+<OPTION value="農藝博">農藝博
+<OPTION value="農自中心">農自中心
+<OPTION value="農經學程">農經學程
+<OPTION value="農產品驗證">農產品驗證
+<OPTION value="農機實習廠">農機實習廠
+<OPTION value="農推中心">農推中心
+<OPTION value="轉譯學程博">轉譯學程博
+<OPTION value="跨洲學程">跨洲學程
+<OPTION value="資訊組">資訊組
+<OPTION value="資管組">資管組
+<OPTION value="資管系">資管系
+<OPTION value="資管碩師">資管碩師
+<OPTION value="資管所">資管所
+<OPTION value="資工系">資工系
+<OPTION value="資工所">資工所
+<OPTION value="資工博">資工博
+<OPTION value="貴儀中心">貴儀中心
+<OPTION value="財金系">財金系
+<OPTION value="財金所">財金所
+<OPTION value="諮商中心">諮商中心
+<OPTION value="課指組">課指組
+<OPTION value="課務組">課務組
+<OPTION value="語言中心">語言中心
+<OPTION value="註冊組">註冊組
+<OPTION value="計資中心">計資中心
+<OPTION value="計業組">計業組
+<OPTION value="行銷系">行銷系
+<OPTION value="行政議事組">行政議事組
+<OPTION value="行政組">行政組
+<OPTION value="血清檢驗">血清檢驗
+<OPTION value="藥物檢驗">藥物檢驗
+<OPTION value="藝術中心">藝術中心
+<OPTION value="聯絡組">聯絡組
+<OPTION value="總務處">總務處
+<OPTION value="網路組">網路組
+<OPTION value="統計所">統計所
+<OPTION value="組醫學程">組醫學程
+<OPTION value="系統組">系統組
+<OPTION value="精機械產專">精機械產專
+<OPTION value="精工產專">精工產專
+<OPTION value="精密碩專">精密碩專
+<OPTION value="精密所">精密所
+<OPTION value="精定位產專">精定位產專
+<OPTION value="管理學院(研)">管理學院(研)
+<OPTION value="管理學院">管理學院
+<OPTION value="競賽組">競賽組
+<OPTION value="秘書室">秘書室
+<OPTION value="科管所">科管所
+<OPTION value="科管博">科管博
+<OPTION value="禽病科">禽病科
+<OPTION value="研發組">研發組
+<OPTION value="病理檢驗">病理檢驗
+<OPTION value="畜驗場">畜驗場
+<OPTION value="生醫所">生醫所
+<OPTION value="生醫博">生醫博
+<OPTION value="生輔組">生輔組
+<OPTION value="生管所">生管所
+<OPTION value="生科院(研)">生科院(研)
+<OPTION value="生科院">生科院
+<OPTION value="生科系">生科系
+<OPTION value="生科中心">生科中心
+<OPTION value="生涯發展">生涯發展
+<OPTION value="生機系">生機系
+<OPTION value="生機博">生機博
+<OPTION value="生技所">生技所
+<OPTION value="生技學程">生技學程
+<OPTION value="生技博">生技博
+<OPTION value="生命碩士班">生命碩士班
+<OPTION value="生命博">生命博
+<OPTION value="生化所">生化所
+<OPTION value="生化博">生化博
+<OPTION value="環工系">環工系
+<OPTION value="環工所">環工所
+<OPTION value="環工博">環工博
+<OPTION value="環境保護">環境保護
+<OPTION value="理院(研)">理院(研)
+<OPTION value="理學院">理學院
+<OPTION value="獸院(研)">獸院(研)
+<OPTION value="獸醫院">獸醫院
+<OPTION value="獸醫系">獸醫系
+<OPTION value="獸醫學院">獸醫學院
+<OPTION value="獸醫博">獸醫博
+<OPTION value="獸病所">獸病所
+<OPTION value="物理系">物理系
+<OPTION value="物理碩專">物理碩專
+<OPTION value="物理博">物理博
+<OPTION value="營繕組">營繕組
+<OPTION value="混凝土中心">混凝土中心
+<OPTION value="法政院(研)">法政院(研)
+<OPTION value="法政學院">法政學院
+<OPTION value="法律系">法律系
+<OPTION value="水動疾">水動疾
+<OPTION value="水保系">水保系
+<OPTION value="水保所">水保所
+<OPTION value="水保博">水保博
+<OPTION value="歷史系">歷史系
+<OPTION value="歷史博">歷史博
+<OPTION value="檢驗科">檢驗科
+<OPTION value="機械系">機械系
+<OPTION value="機械所">機械所
+<OPTION value="機械工廠">機械工廠
+<OPTION value="機械博">機械博
+<OPTION value="植病系">植病系
+<OPTION value="植病博">植病博
+<OPTION value="森林系">森林系
+<OPTION value="森林博">森林博
+<OPTION value="校長室">校長室
+<OPTION value="校發會">校發會
+<OPTION value="校史館組">校史館組
+<OPTION value="校友中心">校友中心
+<OPTION value="校企組">校企組
+<OPTION value="林管處">林管處
+<OPTION value="材料系">材料系
+<OPTION value="服務組">服務組
+<OPTION value="會計系">會計系
+<OPTION value="會計所">會計所
+<OPTION value="會計">會計
+<OPTION value="景觀碩士">景觀碩士
+<OPTION value="景觀學程">景觀學程
+<OPTION value="昆蟲系">昆蟲系
+<OPTION value="昆蟲博">昆蟲博
+<OPTION value="文院(研)">文院(研)
+<OPTION value="文書組">文書組
+<OPTION value="文學院">文學院
+<OPTION value="教研所">教研所
+<OPTION value="教官室">教官室
+<OPTION value="教學中心">教學中心
+<OPTION value="教務處">教務處
+<OPTION value="採錄組">採錄組
+<OPTION value="招生資訊組">招生資訊組
+<OPTION value="應經系">應經系
+<OPTION value="應經所">應經所
+<OPTION value="應經博">應經博
+<OPTION value="應數系">應數系
+<OPTION value="應數碩師">應數碩師
+<OPTION value="應數碩專">應數碩專
+<OPTION value="應數博">應數博
+<OPTION value="微電子產專">微電子產專
+<OPTION value="微衛博">微衛博
+<OPTION value="微生檢驗">微生檢驗
+<OPTION value="微基學程">微基學程
+<OPTION value="師培中心">師培中心
+<OPTION value="工院(研)">工院(研)
+<OPTION value="工學院">工學院
+<OPTION value="嵌系統產專">嵌系統產專
+<OPTION value="小動外">小動外
+<OPTION value="小動內">小動內
+<OPTION value="實習商店">實習商店
+<OPTION value="安全衛生">安全衛生
+<OPTION value="學術組">學術組
+<OPTION value="學術會">學術會
+<OPTION value="學術交流組">學術交流組
+<OPTION value="學務處">學務處
+<OPTION value="媒體公關">媒體公關
+<OPTION value="奈米科技">奈米科技
+<OPTION value="奈米科學所">奈米科學所
+<OPTION value="大陸事務組">大陸事務組
+<OPTION value="大動疾">大動疾
+<OPTION value="夜歷史">夜歷史
+<OPTION value="夜會計">夜會計
+<OPTION value="夜外文">夜外文
+<OPTION value="夜企管">夜企管
+<OPTION value="夜中文">夜中文
+<OPTION value="外籍學生">外籍學生
+<OPTION value="外文系">外文系
+<OPTION value="場地組">場地組
+<OPTION value="基資所">基資所
+<OPTION value="土調中心">土調中心
+<OPTION value="土環系">土環系
+<OPTION value="土木系">土木系
+<OPTION value="土木所">土木所
+<OPTION value="土木博士班">土木博士班
+<OPTION value="圖資所">圖資所
+<OPTION value="圖書館">圖書館
+<OPTION value="園驗場">園驗場
+<OPTION value="園藝系">園藝系
+<OPTION value="園藝博">園藝博
+<OPTION value="國際事務處">國際事務處
+<OPTION value="國農學程">國農學程
+<OPTION value="國農企學程">國農企學程
+<OPTION value="國政所">國政所
+<OPTION value="固光源產專">固光源產專
+<OPTION value="台文所">台文所
+<OPTION value="台文學程">台文學程
+<OPTION value="參考組">參考組
+<OPTION value="半製技產專">半製技產專
+<OPTION value="半測試產專">半測試產專
+<OPTION value="化工系">化工系
+<OPTION value="化工碩專">化工碩專
+<OPTION value="化工博">化工博
+<OPTION value="化學系">化學系
+<OPTION value="化學博">化學博
+<OPTION value="動診中心">動診中心
+<OPTION value="動科系">動科系
+<OPTION value="副校長室">副校長室
+<OPTION value="分生檢驗">分生檢驗
+<OPTION value="分生所">分生所
+<OPTION value="分生博">分生博
+<OPTION value="出納組">出納組
+<OPTION value="典藏組">典藏組
+<OPTION value="光電碩專">光電碩專
+<OPTION value="光電產專">光電產專
+<OPTION value="光電所">光電所
+<OPTION value="光半製產專">光半製產專
+<OPTION value="光半技產專">光半技產專
+<OPTION value="僑輔室">僑輔室
+<OPTION value="保管組">保管組
+<OPTION value="住宿輔導組">住宿輔導組
+<OPTION value="企管系">企管系
+<OPTION value="企管博">企管博
+<OPTION value="人文社會">人文社會
+<OPTION value="人事室">人事室
+<OPTION value="人事四">人事四
+<OPTION value="人事二">人事二
+<OPTION value="人事三">人事三
+<OPTION value="人事一">人事一
+<OPTION value="人事">人事
+<OPTION value="事務組">事務組
+<OPTION value="主計室四組">主計室四組
+<OPTION value="主計室二組">主計室二組
+<OPTION value="主計室三組">主計室三組
+<OPTION value="主計室一組">主計室一組
+<OPTION value="主計室">主計室
+<OPTION value="中科經理班">中科經理班
+<OPTION value="中文系">中文系
+<OPTION value="中文所">中文所
+<OPTION value="中文博">中文博
+<OPTION value="LED產專">LED產專
+</SELECT>
+<INPUT TYPE="hidden" NAME="p_start" VALUE=""24.124032,120.674992"">
+<INPUT TYPE="hidden" NAME="p_end" VALUE=""24.121393,120.676961"">
+</FORM>
+<BR>
+
+    <div id="map-canvas" style="width: 45%; height: 100%;float:left"></div>
+    <div id="pano" style="width: 45%; height: 100%;float:left"></div>
+    
+
+  </body>
+</html>
+  
